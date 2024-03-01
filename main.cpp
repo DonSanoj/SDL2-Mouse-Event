@@ -1,6 +1,7 @@
 #include <vector>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <iostream>
+#include <cstdlib> // Add missing include directive
 
 int main() {
 
@@ -37,7 +38,21 @@ int main() {
             {
                 SDL_GetMouseState(&current.x, &current.y);
             }
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_c){
+                vector_of_points.clear();
+            }
         }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+        for (int i = 0; i < vector_of_points.size() - 1; i++) {
+            SDL_RenderDrawLine(renderer, vector_of_points[i].x, vector_of_points[i].y, vector_of_points[i + 1].x, vector_of_points[i + 1].y);
+        }
+
+        SDL_RenderPresent(renderer);
+        SDL_Delay(150);
     }
     
 
