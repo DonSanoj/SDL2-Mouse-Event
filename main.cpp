@@ -1,19 +1,22 @@
 #include <vector>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <iostream>
 #include <cstdlib> // Add missing include directive
 
-int main() {
+int main()
+{
 
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window * window = nullptr;
-    SDL_Renderer * renderer = nullptr;
+    SDL_Window *window = nullptr;
+    SDL_Renderer *renderer = nullptr;
     SDL_CreateWindowAndRenderer(2000, 2000, 0, &window, &renderer);
     SDL_Event event;
 
     SDL_Point current;
 
     std::vector<SDL_Point> vector_of_points;
+
+    int type = 0;
 
     while (true)
     {
@@ -38,8 +41,17 @@ int main() {
             {
                 SDL_GetMouseState(&current.x, &current.y);
             }
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_c){
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_c)
+            {
                 vector_of_points.clear();
+            }
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_m)
+            {
+                type = 1;
+            }
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_1)
+            {
+                type = 0;
             }
         }
 
@@ -47,14 +59,25 @@ int main() {
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-        for (int i = 0; i < vector_of_points.size() - 1; i++) {
-            SDL_RenderDrawLine(renderer, vector_of_points[i].x, vector_of_points[i].y, vector_of_points[i + 1].x, vector_of_points[i + 1].y);
+        if (type == 0)
+        {
+            for (auto point : vector_of_points)
+            {
+                for (auto point2 : vector_of_points)
+                {
+                    SDL_RenderDrawLine(renderer, point.x, point.y, point2.x, point2.y);
+                }
+            }
+        }
+
+        if (type == 1)
+        {
+            SDL_RenderDrawLines(renderer, vector_of_points.data(), vector_of_points.size());
         }
 
         SDL_RenderPresent(renderer);
         SDL_Delay(150);
     }
-    
 
     return 0;
 }
